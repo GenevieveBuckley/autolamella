@@ -205,6 +205,8 @@ def save_final_images(microscope, settings, lamella_number):
         microscope.imaging.set_active_view(2)  # the ion beam view
         microscope.auto_functions.run_auto_cb()
     if settings["imaging"]["full_field_ib_images"]:
+        # Take image with imaging ion beam current (20 pico-Amps)
+        microscope.beams.ion_beam.beam_current.value = 20e-12
         image = grab_ion_image(microscope, fullfield_cam_settings)
         filename = os.path.join(
             output_dir, "IB_lamella{}-milling-complete.tif".format(
@@ -347,3 +349,5 @@ def mill_all_stages(
             if stage_number + 1 == len(protocol_stages):
                 save_final_images(microscope, settings, lamella_number)
             reset_state(microscope, settings)
+            # Return ion beam current to imaging current (20 pico-Amps)
+            microscope.beams.ion_beam.beam_current.value = 20e-12
